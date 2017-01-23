@@ -29,24 +29,39 @@ In the above example, the field will only be shown when *MultiChoice* or *TrueFa
 Another example:
 ```json
 {
-  "name": "forceFullScreenWidthThreshold",
-  "label": "Force fullscreen mode when narrower than (in pixels)",
-  "type": "number",
-  "min": 0,
+  "name": "wearWarmCap",
+  "label": "When this is enabled, a warm cap should be worn",
+  "type": "boolean",
   "widget": "showWhen",
   "showWhen": {
+    "type": "and",
+    "detach": true,
     "rules": [
       {
-        "field": "fullScreenMode",
+        "field": "timeOfYear",
         "equals": [
-          "dynamic"
+          "winter"
+        ]
+      },
+      {
+        "field": "temperature",
+        "equals": [
+          "cold"
         ]
       }
     ]
   }
 }
 ```
-In the above example, this field will only be shown when the author has selected *dynamic* in the *fullScreenMode* field.
+In the above example, this field will only be shown when the field *timeOfYear* equals *winter* and the field *temperature* equals *cold*.
+
+## config
+When setting the widget to "showWhen", the "showWhen" parameter must be set. This parameter must be an object, and supports the following fields:
+- type (optional): *and* or *or*, default is *or*.
+- detach (optional): true or false. True means field is removed from DOM when hidden. Default behaviour is hiding it using CSS (display: none).
+- rules: An array of rules, where each rule consist of the following parameters:
+  - field: the path and name of the field
+  - equals: a list of values (strings) making this field being shown
 
 ## License
 
