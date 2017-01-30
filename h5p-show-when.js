@@ -18,14 +18,23 @@ H5PEditor.ShowWhen = (function ($) {
     };
   }
 
+  function booleanHandler(field, equals) {
+    this.satisfied = function () {
+      return field.value === equals;
+    };
+  }
+
   // Factory method for creating handlers
-  // "library" and "select" semantics type supported so far
+  // "library", "select" and "boolean" semantics types supported so far
   function createFieldHandler(field, equals) {
     if (field instanceof H5PEditor.Library) {
       return new LibraryHandler(field, equals);
     }
     else if (field instanceof H5PEditor.Select) {
       return new SelectHandler(field, equals);
+    }
+    else if (field instanceof H5PEditor.Boolean) {
+      return new booleanHandler(field, equals);
     }
   }
 
@@ -59,7 +68,7 @@ H5PEditor.ShowWhen = (function ($) {
     };
   }
 
-  // Main widget class cpmstructor
+  // Main widget class constructor
   function ShowWhen(parent, field, params, setValue) {
     var self = this;
 
@@ -106,7 +115,8 @@ H5PEditor.ShowWhen = (function ($) {
     }
 
     // Create the real field:
-    var fieldInstance = new H5PEditor.widgets[field.type](parent, field, params, setValue);
+    var widgetName = config.widget || field.type;
+    var fieldInstance = new H5PEditor.widgets[widgetName](parent, field, params, setValue);
     fieldInstance.appendTo($wrapper);
 
     /**

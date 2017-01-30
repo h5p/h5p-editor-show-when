@@ -1,7 +1,7 @@
 H5PEditor Show When
 ==========
 
-A widget which makes it possible to make a field show or hide dependent on rules. So far, this widget supports toggling visibility based on a list or a library selectors selected value.
+A widget which makes it possible to make a field show or hide dependent on rules. So far, this widget supports toggling visibility based on the value of list, library and boolean fields.
 
 ## Example of usage
 From semantics.json:
