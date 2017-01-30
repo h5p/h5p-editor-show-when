@@ -18,7 +18,7 @@ H5PEditor.ShowWhen = (function ($) {
     };
   }
 
-  function booleanHandler(field, equals) {
+  function BooleanHandler(field, equals) {
     this.satisfied = function () {
       return field.value === equals;
     };
@@ -34,7 +34,7 @@ H5PEditor.ShowWhen = (function ($) {
       return new SelectHandler(field, equals);
     }
     else if (field instanceof H5PEditor.Boolean) {
-      return new booleanHandler(field, equals);
+      return new BooleanHandler(field, equals);
     }
   }
 
