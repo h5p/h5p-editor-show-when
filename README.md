@@ -163,7 +163,9 @@ When setting the widget to "showWhen", the "showWhen" parameter must be set. Thi
 - detach (optional): true or false. True means field is removed from DOM when hidden. Default behaviour is hiding it using CSS (display: none).
 - rules: An array of rules, where each rule consist of the following parameters:
   - field: the path and name of the field
-  - equals: a list of values (strings) making this field being shown
+  - equals:
+    - For type list and library: a list of values (strings) making this field being shown
+    - For boolean: true or false
 
 ## License
 
