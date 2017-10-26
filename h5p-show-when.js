@@ -79,7 +79,7 @@ H5PEditor.ShowWhen = (function ($) {
 
     // Create the wrapper:
     var $wrapper = $('<div>', {
-      'class': 'h5p-editor-widget-show-when'
+      'class': 'field h5p-editor-widget-show-when'
     });
     var showing = false;
     var config = self.field.showWhen;
