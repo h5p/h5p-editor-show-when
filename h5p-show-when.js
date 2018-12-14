@@ -27,13 +27,13 @@ H5PEditor.ShowWhen = (function ($) {
   // Factory method for creating handlers
   // "library", "select" and "boolean" semantics types supported so far
   function createFieldHandler(field, equals) {
-    if (field instanceof H5PEditor.Library) {
+    if (field.field.type === 'library') {
       return new LibraryHandler(field, equals);
     }
-    else if (field instanceof H5PEditor.Select) {
+    else if (field.field.type === 'select') {
       return new SelectHandler(field, equals);
     }
-    else if (field instanceof H5PEditor.Boolean) {
+    else if (field.field.type === 'boolean') {
       return new BooleanHandler(field, equals);
     }
   }
@@ -85,7 +85,7 @@ H5PEditor.ShowWhen = (function ($) {
     var config = self.field.showWhen;
 
     if (config === undefined) {
-      throw new Error('You need to set the showWhen in semantics.json property when using the showWhen widget');
+      throw new Error('You need to set the showWhen property in semantics.json when using the showWhen widget');
     }
 
     var ruleHandler = new RuleHandler(config.type);
