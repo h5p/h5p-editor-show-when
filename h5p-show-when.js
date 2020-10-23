@@ -2,6 +2,10 @@ H5PEditor.ShowWhen = (function ($) {
 
   // Handler for the 'select' semantics type
   function SelectHandler(field, equals) {
+    if (typeof equals === 'string') {
+      equals = [equals];
+    }
+
     this.satisfied = function () {
       return (equals.indexOf(field.value) !== -1);
     };
@@ -9,6 +13,10 @@ H5PEditor.ShowWhen = (function ($) {
 
   // Handler for the 'library' semantics type
   function LibraryHandler(field, equals) {
+    if (typeof equals === 'string') {
+      equals = [equals];
+    }
+
     this.satisfied = function () {
       var value;
       if (field.currentLibrary !== undefined && field.params.library) {
