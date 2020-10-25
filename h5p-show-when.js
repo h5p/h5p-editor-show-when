@@ -77,6 +77,9 @@ H5PEditor.ShowWhen = (function ($) {
     self.passReadies = true;
     self.value = params;
 
+    // Allow other fields to listen to changes to original field
+    self.changes = [];
+
     // Create the wrapper:
     var $wrapper = $('<div>', {
       'class': 'field h5p-editor-widget-show-when'
@@ -118,6 +121,14 @@ H5PEditor.ShowWhen = (function ($) {
     var widgetName = config.widget || field.type;
     var fieldInstance = new H5PEditor.widgets[widgetName](parent, field, params, setValue);
     fieldInstance.appendTo($wrapper);
+
+    // Forward value changes from original field
+    fieldInstance.changes.push(function (value) {
+      for (var i = 0; i < self.changes.length; i++) {
+        self.value = value;
+        self.changes[i](value);
+      }
+    });
 
     /**
      * Add myself to the DOM
