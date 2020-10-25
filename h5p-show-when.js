@@ -68,6 +68,29 @@ H5PEditor.ShowWhen = (function ($) {
     };
   }
 
+  // Apply the rules. Yes, many parameters ...
+  function applyRuleHandler(targetField, rule, ruleHandler, parent, config, showing, self, $wrapper) {
+    var handler = createFieldHandler(targetField, rule.equals);
+
+    if (handler !== undefined) {
+      ruleHandler.add(handler);
+      H5PEditor.followField(parent, rule.field, config.detach ? function () {
+        if (showing != ruleHandler.rulesSatisfied()) {
+          showing = !showing;
+          if (showing) {
+            $wrapper.appendTo(self.$container);
+          }
+          else {
+            $wrapper.detach();
+          }
+        }
+      } : function () {
+        showing = ruleHandler.rulesSatisfied();
+        $wrapper.toggleClass('hidden', !showing);
+      });
+    }
+  }
+
   // Main widget class constructor
   function ShowWhen(parent, field, params, setValue) {
     var self = this;
@@ -93,23 +116,19 @@ H5PEditor.ShowWhen = (function ($) {
     for (var i = 0; i < config.rules.length; i++) {
       var rule = config.rules[i];
       var targetField = H5PEditor.findField(rule.field, parent);
-      var handler = createFieldHandler(targetField, rule.equals);
 
-      if (handler !== undefined) {
-        ruleHandler.add(handler);
-        H5PEditor.followField(parent, rule.field, config.detach ? function () {
-          if (showing != ruleHandler.rulesSatisfied()) {
-            showing = !showing;
-            if (showing) {
-              $wrapper.appendTo(self.$container);
-            }
-            else {
-              $wrapper.detach();
-            }
+      if (targetField) {
+        applyRuleHandler(targetField, rule, ruleHandler, parent, config, showing, self, $wrapper);
+      }
+      else {
+        // Triggering field may not have been loaded yet
+        parent.ready(function () {
+          var targetField = H5PEditor.findField(rule.field, parent);
+          if (!targetField) {
+            throw new Error('The path to the triggering field for showWhen seems to be wrong');
           }
-        } : function () {
-          showing = ruleHandler.rulesSatisfied();
-          $wrapper.toggleClass('hidden', !showing);
+
+          applyRuleHandler(targetField, rule, ruleHandler, parent, config, showing, self, $wrapper);
         });
       }
     }
