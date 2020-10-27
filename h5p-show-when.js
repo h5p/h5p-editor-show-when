@@ -122,13 +122,15 @@ H5PEditor.ShowWhen = (function ($) {
     var fieldInstance = new H5PEditor.widgets[widgetName](parent, field, params, setValue);
     fieldInstance.appendTo($wrapper);
 
-    // Forward value changes from original field
-    fieldInstance.changes.push(function (value) {
-      for (var i = 0; i < self.changes.length; i++) {
-        self.value = value;
-        self.changes[i](value);
-      }
-    });
+    if (fieldInstance.changes) {
+      // Forward value changes from original field
+      fieldInstance.changes.push(function (value) {
+        for (var i = 0; i < self.changes.length; i++) {
+          self.value = value;
+          self.changes[i](value);
+        }
+      });
+    }
 
     /**
      * Add myself to the DOM
