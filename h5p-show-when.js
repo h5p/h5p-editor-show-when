@@ -51,9 +51,7 @@ H5PEditor.ShowWhen = (function ($) {
     };
 
     // Check if rules are satisfied
-    this.rulesSatisfied = function (ruleslength) {
-      // Initialize the number of rules in a TYPE_AND field
-      var andRulesNb = 0;
+    this.rulesSatisfied = function () {
       for (var i = 0; i < handlers.length; i++) {
         // check if rule was hit
         var ruleHit = handlers[i].satisfied();
@@ -61,12 +59,8 @@ H5PEditor.ShowWhen = (function ($) {
         if (ruleHit && type === TYPE_OR) {
           return true;
         }
-        else if (type === TYPE_AND && ruleHit) {
-            // Increment the number of rules in a TYPE_AND field.
-            andRulesNb ++
-            if (andRulesNb === ruleslength) {
-              return true;
-            }
+        else if (type === TYPE_AND && !ruleHit) {
+          return false;
         }
       }
 
@@ -95,14 +89,11 @@ H5PEditor.ShowWhen = (function ($) {
     }
 
     var ruleHandler = new RuleHandler(config.type);
-    // Get the number of rules in a TYPE_AND field.
-    var ruleslength = config.rules.length;
-    
+
     for (var i = 0; i < config.rules.length; i++) {
       var rule = config.rules[i];
       var targetField = H5PEditor.findField(rule.field, parent);
-      // Pass the ruleslength value to the handler
-      var handler = createFieldHandler(targetField, rule.equals, ruleslength);
+      var handler = createFieldHandler(targetField, rule.equals);
 
       if (handler !== undefined) {
         ruleHandler.add(handler);
@@ -117,8 +108,7 @@ H5PEditor.ShowWhen = (function ($) {
             }
           }
         } : function () {
-          // Pass the ruleslength value to "showing".
-          showing = ruleHandler.rulesSatisfied(ruleslength);
+          showing = ruleHandler.rulesSatisfied();
           $wrapper.toggleClass('hidden', !showing);
         });
       }
