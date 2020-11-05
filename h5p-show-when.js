@@ -75,7 +75,9 @@ H5PEditor.ShowWhen = (function ($) {
     self.field = field;
     // Outsource readies
     self.passReadies = true;
-    self.value = params;
+    self.value = params; 
+    // Allow other fields to listen to changes to original field
+    self.changes = [];    
 
     // Create the wrapper:
     var $wrapper = $('<div>', {
@@ -117,7 +119,18 @@ H5PEditor.ShowWhen = (function ($) {
     // Create the real field:
     var widgetName = config.widget || field.type;
     var fieldInstance = new H5PEditor.widgets[widgetName](parent, field, params, setValue);
-    fieldInstance.appendTo($wrapper);
+    fieldInstance.appendTo($wrapper); 
+    // Forward value changes from original field
+    
+    if (fieldInstance.changes) {
+      // Forward value changes from original field
+      fieldInstance.changes.push(function (value) {
+        for (var i = 0; i < self.changes.length; i++) {
+          self.value = value;
+          self.changes[i](value);
+        }
+      });
+    } 
 
     /**
      * Add myself to the DOM
