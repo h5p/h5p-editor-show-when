@@ -193,7 +193,7 @@ In the above example, this field will only be shown when the field *timeOfYear* 
 }
 ```
 
-In the above example, we add a `widget` to the `showWhen` property, in order to be able to conditonally show an `html` field. Note that the `tags` property that is connected to the `html` widget is set directly on the field itself, not within the `showWhen` rules.
+In the above example, we add a `widget` to the `showWhen` property, in order to be able to conditionally show an `html` field. Note that the `tags` property that is connected to the `html` widget is set directly on the field itself, not within the `showWhen` rules.
 
 ## config
 When setting the widget to "showWhen", the "showWhen" parameter must be set. This parameter must be an object, and supports the following fields:
