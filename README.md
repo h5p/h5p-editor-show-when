@@ -157,6 +157,44 @@ In the above example, this field will only be shown when the field *timeOfYear* 
 ]
 ```
 
+### Using `showWhen.widget` to conditionally show a field that has another widget
+
+```json
+{
+  "label": "Rich text",
+  "name": "richText",
+  "type": "text",
+  "tags": [
+    "strong",
+    "em",
+    "del",
+    "a",
+    "ul",
+    "ol",
+    "h2",
+    "h3",
+    "hr",
+    "pre",
+    "code"
+  ],
+  "widget": "showWhen",
+  "showWhen": {
+    "rules": [
+      {
+        "field": "action",
+        "equals": [
+          "H5P.MultiChoice",
+          "H5P.TrueFalse"
+        ]
+      }
+    ],
+    "widget": "html"
+  }
+}
+```
+
+In the above example, we add a `widget` to the `showWhen` property, in order to be able to conditionally show an `html` field. Note that the `tags` property that is connected to the `html` widget is set directly on the field itself, not within the `showWhen` rules.
+
 ## config
 When setting the widget to "showWhen", the "showWhen" parameter must be set. This parameter must be an object, and supports the following fields:
 - type (optional): *and* or *or*, default is *or*.
