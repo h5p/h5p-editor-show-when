@@ -185,10 +185,10 @@ In the above example, this field will only be shown when the field *timeOfYear* 
         "equals": [
           "H5P.MultiChoice",
           "H5P.TrueFalse"
-        ],
-        "widget": "html"        
+        ]
       }
-    ]
+    ],
+    "widget": "html"
   }
 }
 ```
