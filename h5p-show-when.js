@@ -68,6 +68,66 @@ H5PEditor.ShowWhen = (function ($) {
     };
   }
 
+  // Apply the rules. Yes, many parameters ...
+  function applyRuleHandler(parent, rule, targetField, ruleHandler, config, showing, self, $wrapper) {
+    var handler = createFieldHandler(targetField, rule.equals);
+
+    if (handler !== undefined) {
+      ruleHandler.add(handler);
+      H5PEditor.followField(parent, rule.field, config.detach ? function () {
+        if (showing != ruleHandler.rulesSatisfied()) {
+          showing = !showing;
+          if (showing) {
+            $wrapper.appendTo(self.$container);
+          }
+          else {
+            $wrapper.detach();
+          }
+        }
+      } : function () {
+        showing = ruleHandler.rulesSatisfied();
+        $wrapper.toggleClass('hidden', !showing);
+      });
+    }
+  }
+
+  /*
+   * The target field has not yet been initializes, so wait for each parent field
+   * to be ready and search again. Can't just wait for the tree to be loaded,
+   * as some fields (like lists) will hold back ready callbacks.
+   */
+  function waitForParents(parent, rule, targetField, ruleHandler, config, showing, self, $wrapper) {
+    if (!parent || !parent.parent) {
+      return; // At form's top level
+    }
+
+    parent.ready(function () {
+      // Search this parent
+      var targetField = H5PEditor.findField(rule.field, parent);
+
+      if (!targetField) {
+        throw new Error('The path to the triggering field for showWhen seems to be wrong');
+      }
+
+      applyRuleHandler(parent, rule, targetField, ruleHandler, config, showing, self, $wrapper);
+    });
+
+    if (parent.parent && typeof parent.parent.ready === 'function') {
+      // Adjust target path for next higher level
+      const newField = rule.field.split('/');
+      if (newField[0] === '..') {
+        newField.splice(0, 1);
+      }
+
+      // Rule is a reference
+      const newRule = {
+        field: newField.join('/'),
+        equals: rule.equals
+      }
+      waitForParents(parent.parent, newRule, targetField, ruleHandler, config, showing, self, $wrapper);
+    }
+  }
+
   // Main widget class constructor
   function ShowWhen(parent, field, params, setValue) {
     var self = this;
@@ -93,24 +153,13 @@ H5PEditor.ShowWhen = (function ($) {
     for (var i = 0; i < config.rules.length; i++) {
       var rule = config.rules[i];
       var targetField = H5PEditor.findField(rule.field, parent);
-      var handler = createFieldHandler(targetField, rule.equals);
 
-      if (handler !== undefined) {
-        ruleHandler.add(handler);
-        H5PEditor.followField(parent, rule.field, config.detach ? function () {
-          if (showing != ruleHandler.rulesSatisfied()) {
-            showing = !showing;
-            if (showing) {
-              $wrapper.appendTo(self.$container);
-            }
-            else {
-              $wrapper.detach();
-            }
-          }
-        } : function () {
-          showing = ruleHandler.rulesSatisfied();
-          $wrapper.toggleClass('hidden', !showing);
-        });
+      if (targetField) {
+        // Apply rule
+        applyRuleHandler(parent, rule, targetField, ruleHandler, config, showing, self, $wrapper);
+      }
+      else {
+        waitForParents(parent, rule, targetField, ruleHandler, config, showing, self, $wrapper);
       }
     }
 
