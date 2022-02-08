@@ -195,6 +195,29 @@ In the above example, this field will only be shown when the field *timeOfYear* 
 
 In the above example, we add a `widget` to the `showWhen` property, in order to be able to conditionally show an `html` field. Note that the `tags` property that is connected to the `html` widget is set directly on the field itself, not within the `showWhen` rules.
 
+### Overwriting a hidden field's value
+
+```json
+{
+  "name": "alt",
+  "type": "text",
+  "label": "Alternative text",
+  "description": "Required. If the browser can't load the image this text will be displayed instead. Also used by \"text-to-speech\" readers.",
+  "widget": "showWhen",
+  "showWhen": {
+    "rules": [
+      {
+        "field": "decorative",
+        "equals": false
+      }
+    ],
+    "nullWhenHidden": true
+  }
+}
+```
+
+In the above example, notice the `"nullWhenHidden": true` property. If the `decorative` field is true, the `alt` field will be hidden, and its value will also be set to `null`. Normally, a field that is hidden still holds its previous value and remains in the content parameters upon saving.
+
 ## config
 When setting the widget to "showWhen", the "showWhen" parameter must be set. This parameter must be an object, and supports the following fields:
 - type (optional): *and* or *or*, default is *or*.
