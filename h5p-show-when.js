@@ -97,19 +97,26 @@ H5PEditor.ShowWhen = (function ($) {
 
       if (handler !== undefined) {
         ruleHandler.add(handler);
-        H5PEditor.followField(parent, rule.field, config.detach ? function () {
-          if (showing != ruleHandler.rulesSatisfied()) {
-            showing = !showing;
-            if (showing) {
-              $wrapper.appendTo(self.$container);
-            }
-            else {
-              $wrapper.detach();
+        H5PEditor.followField(parent, rule.field, function () {
+          if (config.detch) {
+            if (showing != ruleHandler.rulesSatisfied()) {
+              showing = !showing;
+              if (showing) {
+                $wrapper.appendTo(self.$container);
+              }
+              else {
+                $wrapper.detach();
+              }
             }
           }
-        } : function () {
-          showing = ruleHandler.rulesSatisfied();
-          $wrapper.toggleClass('hidden', !showing);
+          else {
+            showing = ruleHandler.rulesSatisfied();
+            $wrapper.toggleClass('hidden', !showing);
+          }
+
+          if (config.nullWhenHidden && !ruleHandler.rulesSatisfied()) {
+            setValue(self.field, null);
+          }
         });
       }
     }
