@@ -98,7 +98,7 @@ H5PEditor.ShowWhen = (function ($) {
       if (handler !== undefined) {
         ruleHandler.add(handler);
         H5PEditor.followField(parent, rule.field, function () {
-          if (config.detch) {
+          if (config.detach) {
             if (showing != ruleHandler.rulesSatisfied()) {
               showing = !showing;
               if (showing) {
