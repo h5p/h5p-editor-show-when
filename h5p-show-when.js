@@ -115,7 +115,7 @@ H5PEditor.ShowWhen = (function ($) {
           }
 
           if (config.nullWhenHidden && !ruleHandler.rulesSatisfied()) {
-            setValue(self.field, null);
+            setValue(self.field, undefined);
           }
         });
       }
